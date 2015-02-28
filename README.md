@@ -8,3 +8,9 @@ We would like you to build a simple Notes application for android. User should b
 ![Google Keep](http://i.stack.imgur.com/80BHe.png "Multicolumn View")
 
 Also on adding a new note, the notes on All Notes Screen should rearranges themselves to show the latest notes on top. You can refer to [this video](http://artoogithubdocs.s3.amazonaws.com/bounty/keep2.gif) to understand how exactly you need to make notes transitions.
+
+You are welcome to design and develop the app by your choice. However, we are keen to see the following features - 
+
+1. Multi-column View for notes
+2. Cross Animation on adding a note (like Google Keep)
+3. Different sizes for the notes individual views depending on their content length
