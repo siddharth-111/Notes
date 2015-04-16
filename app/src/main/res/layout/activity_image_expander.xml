@@ -1,0 +1,69 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context=".MainActivity"
+    android:id="@+id/parentLayout2"
+    >
+    <RelativeLayout
+        android:id="@+id/inputHolder2"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:background="#262626">
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgNoteModifier"
+            android:layout_toLeftOf="@+id/editNote2"
+            android:layout_toStartOf="@+id/editNote2"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="false"
+            android:hint = "Add Caption"
+            android:textColorHint="#FFFFFF"
+
+            />
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/deleteImg"
+            android:onClick="deleteImageActivity"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_action_name3"
+            />
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/editNote2"
+            android:onClick="EditImageActivity"
+            android:background="@drawable/ic_action_name"
+            android:layout_alignBottom="@+id/imgNoteModifier"
+            android:layout_toStartOf="@+id/deleteImg" />
+    </RelativeLayout>
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:fillViewport="true"
+        android:layout_below="@id/inputHolder2"
+        >
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id = "@+id/mainImageHolder1"
+            android:clipChildren="false"
+            >
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/imageView2" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
