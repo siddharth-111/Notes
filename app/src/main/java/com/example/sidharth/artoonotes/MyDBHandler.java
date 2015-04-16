@@ -8,7 +8,7 @@ import android.content.ContentValues;
 import java.util.ArrayList;
 import java.util.List;
 public class MyDBHandler extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 29;
+    private static final int DATABASE_VERSION = 30;
     private static final String DATABASE_NAME = "productDB.db";
     public static final String TABLE_PRODUCTS = "products";
     public static final String COLUMN_ID = "_id";
@@ -27,6 +27,9 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 ");";
         db.execSQL(query);
     }
+
+
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRODUCTS);
@@ -43,9 +46,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.close();
     }
     //Delete a product from the database
-    public void deleteProduct(String productName) {
+    public void deleteProduct(int id) {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_PRODUCTS + " WHERE " + COLUMN_PRODUCTNAME + "=\"" + productName + "\";");
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_ID,id);
+        String whereClause = " "+COLUMN_ID + " = " + id + " ";
+        db.delete(TABLE_PRODUCTS,whereClause,null);
+        db.close();
     }
     //Gets the Recently Added note
     public Product databaseToString() {
@@ -59,6 +66,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         c.moveToFirst();
         if (c.moveToFirst()) {
             do {
+                nm.set_id(c.getInt(0));
                 nm.set_productname(c.getString(c.getColumnIndexOrThrow("productname")));
                 nm.setCreationTime(c.getString(c.getColumnIndexOrThrow("creation_time")));
                 nm.setImage(c.getBlob(3));
@@ -77,6 +85,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Product nm = new Product();
+                nm.set_id(c.getInt(0));
                 nm.set_productname(c.getString(c.getColumnIndexOrThrow("productname")));
                 nm.setCreationTime(c.getString(c.getColumnIndexOrThrow("creation_time")));
                 nm.setImage(c.getBlob(3));
@@ -98,5 +107,33 @@ public class MyDBHandler extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_PRODUCTS);
+    }
+    public Product returnProduct(int id){
+        SQLiteDatabase db = getWritableDatabase();
+        Product nm = new Product();
+        String query = "SELECT * FROM " + TABLE_PRODUCTS + " WHERE _id = " +id+ ";";
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+        if (c.moveToFirst()) {
+            do {
+                nm.set_id(c.getInt(0));
+                nm.set_productname(c.getString(c.getColumnIndexOrThrow("productname")));
+                nm.setCreationTime(c.getString(c.getColumnIndexOrThrow("creation_time")));
+                nm.setImage(c.getBlob(3));
+            } while (c.moveToNext());
+        }
+        db.close();
+        return nm;
+
+    }
+    public void updateNote(int id,String note)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_ID,id);
+        values.put(COLUMN_PRODUCTNAME,note);
+        String whereClause = " "+COLUMN_ID + " = " + id + " ";
+        db.update(TABLE_PRODUCTS,values,whereClause,null);
+        db.close();
     }
 }

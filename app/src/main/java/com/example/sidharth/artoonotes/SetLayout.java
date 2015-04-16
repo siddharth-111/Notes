@@ -22,11 +22,13 @@ public class SetLayout {
     }
     public View setView(Product pr) {
         byte [] outImage = pr.getImage();
+
 // Checks if the image field of database is null,and if it is then make a call to my_note_layout.xml
         if(outImage==null)
         {
             LayoutInflater inflater = (LayoutInflater) baseContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view1 = inflater.inflate(R.layout.my_note_layout, null);
+
             TextView Tv = (TextView) view1.findViewById(R.id.noteTitle);
             TextView Tv2 = (TextView) view1.findViewById(R.id.noteDate);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -34,6 +36,8 @@ public class SetLayout {
                     LinearLayout.LayoutParams.MATCH_PARENT
             );
             params.setMargins(10, 10, 10, 10);
+            int id = pr.get_id();
+            view1.setId(id);
             view1.setLayoutParams(params);
             Tv.setGravity(Gravity.CENTER);
             Tv.setTypeface(null, Typeface.BOLD_ITALIC);
@@ -62,6 +66,8 @@ public class SetLayout {
             );
             params.setMargins(10, 10, 10, 10);
             view1.setLayoutParams(params);
+            int id = pr.get_id();
+            view1.setId(id);
             TextView Tv2 = (TextView) view1.findViewById(R.id.noteimgTitle);
             ImageView Iv = (ImageView) view1.findViewById(R.id.imageView);
             String date = pr.getCreationTime().toString();

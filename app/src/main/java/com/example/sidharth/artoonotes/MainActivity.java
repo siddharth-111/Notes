@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -13,7 +14,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 public class MainActivity extends ActionBarActivity {
@@ -22,13 +27,86 @@ public class MainActivity extends ActionBarActivity {
     EditText noteInput;
     List<Product> notesList;
     Product pr;
+    static final int REQUEST_CAPTURE = 1;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         allNoteAdder();
+        handler();
     }
+    public void handler(){
+
+        List<View> left = new ArrayList<View>();
+        List<View> right = new ArrayList<View>();
+        int leftCount = leftPane.getChildCount();
+        int rightCount = rightPane.getChildCount();
+        for(int i=0;i<leftCount;i++)
+            left.add(leftPane.getChildAt(i));
+        for(int i=0;i<rightCount;i++)
+            right.add(rightPane.getChildAt(i));
+        for(View v1 : left) {
+             final int id = v1.getId();
+
+            v1.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                Product pm = dbHandler.returnProduct(id);
+                byte outImage[] = pm.getImage();
+                if(outImage==null) {
+                    Intent i = new Intent(MainActivity.this, NoteExpander.class);
+                    i.putExtra("id", id);
+                    startActivity(i);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    // dbHandler.deleteProduct(id);
+                }
+                else
+                {
+                    Intent i = new Intent(MainActivity.this, ImageExpander.class);
+                    i.putExtra("id", id);
+                    startActivity(i);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                }
+
+                }
+
+
+            });
+        }
+
+        for(View v1 : right) {
+           final int id = v1.getId();
+            v1.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Product pm = dbHandler.returnProduct(id);
+                    byte outImage[] = pm.getImage();
+                    if(outImage==null) {
+                        Intent i = new Intent(MainActivity.this, NoteExpander.class);
+                        i.putExtra("id", id);
+                        startActivity(i);
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                        // dbHandler.deleteProduct(id);
+                    }
+                    else
+                    {
+                        Intent i = new Intent(MainActivity.this, ImageExpander.class);
+                        i.putExtra("id", id);
+                        startActivity(i);
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    }
+                }
+
+            });
+
+        }
+    }
+    protected void onResume(){
+        super.onResume();
+
+        allNoteAdder();
+    }
+
+
     //Sets The Initial view of the Layout
     public void allNoteAdder() {
         leftPane = (LinearLayout) findViewById(R.id.leftPane);
@@ -37,6 +115,8 @@ public class MainActivity extends ActionBarActivity {
         noteInput = (EditText) findViewById(R.id.txtNoteInput);
         noteInput.setTextColor(Color.WHITE);
         dbHandler = new MyDBHandler(this, null, null, 1);
+        leftPane.removeAllViews();
+        rightPane.removeAllViews();
         //dbHandler.deleteTable();
         SetLayout viewSet = new SetLayout(getBaseContext());
         Animation translate,right_in;
@@ -47,6 +127,7 @@ public class MainActivity extends ActionBarActivity {
         for (Iterator iterator = notesList.iterator(); iterator.hasNext(); i++) {
             Product noteItem = (Product) iterator.next();
             View v = viewSet.setView(noteItem);
+           // v.setId(noteItem.get_id());
             if (i % 2 == 0) {
                 leftPane.addView(v);
                 v.startAnimation(translate);
@@ -55,13 +136,18 @@ public class MainActivity extends ActionBarActivity {
                 v.startAnimation(right_in);
             }
         }
+        handler();
     }
+
+
+
     //The AddNote(tick mark) Button to add new Note
     public void addButtonClicked(View view){
         Product product = new Product(noteInput.getText().toString());
         noteInput.setText("");
         dbHandler.addProduct(product);
         printDatabase();
+        handler();
     }
     //Camera Logic
     public void addClick(View view) {
@@ -82,6 +168,7 @@ public class MainActivity extends ActionBarActivity {
             byte imageInByte[] = stream.toByteArray();
             dbHandler.addProduct(new Product(noteInput.getText().toString(), imageInByte));
             printDatabase();
+            handler();
         }
     }
     //Checks if the User has a Camera
@@ -127,4 +214,5 @@ public class MainActivity extends ActionBarActivity {
         leftPane.addView(view3, 0); // Adds the recent added view to the top
         view3.startAnimation(translate);
     }
+
 }
